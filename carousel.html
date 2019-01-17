@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Carousel demo</title>
+
+<style>
+    .carousel{
+        width: 320px;
+        height: 180px;
+        margin: 30px auto;
+        overflow: hidden;
+        position: relative;
+    } 
+    .carousel ul,.carousel li{
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+    .carousel .img-ct{
+        position: absolute;
+        overflow: hidden;
+    }
+
+    .carousel .img-ct>li{
+        float: left;
+    }
+    .carousel .img-ct img{
+        width: 320px;
+        height: 180px;
+    }
+
+    .carousel .arrow{
+        position: absolute;
+        height: 30px;
+        width: 30px;
+        border: 1px solid #fff;
+        border-radius: 50%;
+        color: #fff;
+        top: 75px;
+        text-align: center;
+        display: inline-block;
+        line-height: 30px; 
+        text-decoration: none; 
+    }
+    .arrow.pre{
+        left:10px;
+    }
+    .arrow.next{
+        right: 10px;
+    }
+    .carousel .arrow:hover{
+        opacity: 0.8;
+    }
+    .carousel .button{
+        position: absolute;
+        bottom: 10px;
+        width: 100%;
+        text-align: center;
+
+    }  
+    .carousel .button>li{
+        display: inline-block;
+        width: 30px;
+        height: 5px;
+        border: 1px solid #fff;
+        border-radius: 4px;
+        margin: 0 3px;
+        cursor: pointer;
+        opacity: 0.8;
+    }
+    .carousel .button>li.active{
+        background-color: #fff;
+        opacity: 0.8;
+    }
+
+</style>
+ <script src="https://code.jquery.com/jquery-2.0.3.js"></script>
+</head>
+<body>
+    <div class="carousel">
+        <ul class="img-ct">
+            <li><a href="#"><img src="https://a.bbkz.net/forum/attachment.php?attachmentid=2541842&thumb=1&d=1538994039"></a></li>
+            <li><a href="#"><img src="http://b4-q.mafengwo.net/s10/M00/83/BF/wKgBZ1lVCKyAW8O1ABOHSjJg6Ds49.jpeg?imageMogr2%2Fthumbnail%2F%211020x540r%2Fgravity%2FCenter%2Fcrop%2F%211020x540%2Fquality%2F100"></a></li>
+            <li><a href="#"><img src="https://www.auroratour.com.tw/userfiles/events/20/%E6%91%A9%E6%B4%9B%E5%93%A5_1100X385.jpg"></a></li>
+            <li><a href="#"><img src="http://s2.lvjs.com.cn/uploads/pc/place2/2017-03-23/1370f7bc-3681-4de5-b790-cb7003a1b37f.jpg"></a></li>
+        </ul>
+        <a href="#" class="pre arrow"><</a>
+        <a href="#" class="next arrow">></a>
+        <ul class="button">
+            <li class="active"></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>
+
+    <div class="carousel">
+            <ul class="img-ct">
+                <li><a href="#"><img src="https://a.bbkz.net/forum/attachment.php?attachmentid=2541842&thumb=1&d=1538994039"></a></li>
+                <li><a href="#"><img src="http://b4-q.mafengwo.net/s10/M00/83/BF/wKgBZ1lVCKyAW8O1ABOHSjJg6Ds49.jpeg?imageMogr2%2Fthumbnail%2F%211020x540r%2Fgravity%2FCenter%2Fcrop%2F%211020x540%2Fquality%2F100"></a></li>
+                <li><a href="#"><img src="https://www.auroratour.com.tw/userfiles/events/20/%E6%91%A9%E6%B4%9B%E5%93%A5_1100X385.jpg"></a></li>
+                <li><a href="#"><img src="http://s2.lvjs.com.cn/uploads/pc/place2/2017-03-23/1370f7bc-3681-4de5-b790-cb7003a1b37f.jpg"></a></li>
+            </ul>
+            <a href="#" class="pre arrow"><</a>
+            <a href="#" class="next arrow">></a>
+            <ul class="button">
+                <li class="active"></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+        </div>
+<script>
+  
+function Carousel($ct){
+    this.init($ct)
+    this.bind()
+}
+
+Carousel.prototype = {
+    init: function($ct){
+       this.$ct = $ct
+    //    console.log(this)
+    //    console.log($ct)
+       this.$imgCt = this.$ct.find('.img-ct')
+       this.$imgs = this.$ct.find('.img-ct >li')
+       this.$preBtn = this.$ct.find('.pre')
+       this.$nextBtn = this.$ct.find('.next')
+       this.$Btns = this.$ct.find('.button li')
+    
+       this.imgWidth = this.$imgs.width()
+       this.imgCount = this.$imgs.length
+       this.index = 0
+
+       this.$imgCt.append(this.$imgs.first().clone())
+       this.$imgCt.prepend(this.$imgs.last().clone())
+
+       this.$imgCt.width((this.imgCount+2)*this.imgWidth)
+       this.$imgCt.css('left',-this.imgWidth)
+      
+    },
+     bind : function(){
+         var _this = this
+         this.$preBtn.on('click',function(){
+             _this.playPre(1)
+         })
+         this.$nextBtn.on('click',function(){
+             _this.playNext(1)
+         })
+         this.$Btns.on('click',function(){
+            var btnIndex =  $(this).index()   
+            if(btnIndex<_this.index){
+                _this.playPre(_this.index-btnIndex)
+            }else{_this.playNext(btnIndex-_this.index)
+            }
+         })
+     },
+     playNext: function(times){     
+        
+        if(this.index===this.imgCount){
+             this.$imgCt.css('left',-this.imgWidth)
+             this.index = 0
+         }
+         this.$imgCt.animate({left:"-="+this.imgWidth*times})
+         this.index+=times
+         this.setButtons()
+        console.log(this.index)
+     },
+     playPre: function(times){
+        if(this.index<0){
+             this.$imgCt.css('left',-this.imgWidth*this.imgCount)
+             this.index = this.imgCount-1
+         }
+        this.$imgCt.animate({left:"+="+this.imgWidth*times})
+        this.index-=times
+        
+        this.setButtons()
+        console.log(this.index)
+     },
+     setButtons: function(){
+        //  console.log(this.index)
+       
+        this.$Btns.eq(this.index).addClass('active')
+        .siblings().removeClass('active')
+     },
+
+     autoPlay: function(){
+         var _this = this       
+         setInterval(function(){
+             _this.playNext(1)
+         },1500)
+     }
+}
+
+var a = new Carousel($('.carousel').eq(0))
+var b = new Carousel($('.carousel').eq(1))
+
+
+
+</script>
+    
+
+</body>
+</html>
