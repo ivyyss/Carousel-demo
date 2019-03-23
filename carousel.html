@@ -159,26 +159,31 @@ Carousel.prototype = {
          })
      },
      playNext: function(times){     
-        
-        if(this.index===this.imgCount){
-             this.$imgCt.css('left',-this.imgWidth)
-             this.index = 0
-         }
-         this.$imgCt.animate({left:"-="+this.imgWidth*times})
-         this.index+=times
-         this.setButtons()
-        console.log(this.index)
+
+        var _this=this
+        this.$imgCt.animate({
+            left: '-='+this.imgWidth*times
+        },function(){
+            _this.index += times
+            if(_this.index===_this.imgCount){
+                _this.$imgCt.css('left',-_this.imgWidth)
+                _this.index = 0
+            }
+            _this.setButtons()
+        })
      },
      playPre: function(times){
-        if(this.index<0){
-             this.$imgCt.css('left',-this.imgWidth*this.imgCount)
-             this.index = this.imgCount-1
-         }
-        this.$imgCt.animate({left:"+="+this.imgWidth*times})
-        this.index-=times
-        
-        this.setButtons()
-        console.log(this.index)
+        var _this=this
+        this.$imgCt.animate({
+            left: '+='+this.imgWidth*times
+        },function(){
+            _this.index -= times
+            if(_this.index<0){
+                _this.$imgCt.css('left',-_this.imgWidth*_this.imgCount)
+                _this.index = _this.imgCount-1
+            }
+            _this.setButtons()
+        })
      },
      setButtons: function(){
         //  console.log(this.index)
